@@ -24,10 +24,15 @@ current_model = classifier.load_model("model_final")
 
 @app.route("/api/classify/", methods = ['GET'])
 def classify():
+
+    #app.logger.disabled = True
+    #log = cf.logging.getLogger('werkzeug')
+    #log.disabled = True
+
     print "Hello 1"
     image_raw = request.args.get('raw')
     input_string = image_raw.rsplit('/', 3)
-    input_string[0] = input_string[0]+'/'
+    input_string[0] = input_string[0].replace(' ', '+')
     for i in range(len(input_string)):
         input_string[i] = unicodedata.normalize('NFKD', input_string[i]).encode('ASCII', 'ignore')
     print input_string
@@ -37,13 +42,13 @@ def classify():
 
     #Format image rgb
     image_rgb = cv2.imread("image.jpg")
-    image_rgb = np.array(image_rgb).flatten()
-    image_rgb = map(float, image_rgb)
+    #image_rgb = np.array(image_rgb).flatten()
+    #image_rgb = map(float, image_rgb)
 
     #Format other data points
-    sex = classifier_const.K_SEX_DICT[input_string[1]]
+    sex = classifier_const.K_SEX_DICT[input_string[1]]#unicodedata.normalize('NFKD', input_string[1]).encode('ASCII', 'ignore')]
     age = float(input_string[2])//5*5
-    location = classifier_const.K_LOC_DICT[input_string[3]]
+    location = classifier_const.K_LOC_DICT[input_string[3]]#unicodedata.normalize('NFKD', input_string[3]).encode('ASCII', 'ignore')]
 
     print "Sex:",sex
     print "Age:",age
@@ -54,7 +59,7 @@ def classify():
 
     result=classifier.classify_image(current_model, image_array)
 
-    return result
+    return classifier_const.K_DIS_LOOKUP[result]
 
 #@app.route("/api/classify/<string:encoded_img>/<int:age>/<string:sex>/<string:region>", methods = ['GET'])
 #def classify_image_complete(encoded_img, age, sex, region):
