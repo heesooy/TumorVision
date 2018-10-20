@@ -10,6 +10,7 @@ from flask import Flask, jsonify
 from flask import make_response, request
 app = Flask(__name__)
 import unicodedata
+import numpy as np
 
 current_model = classifier.load_model("model_final")
 #def load_testing_image(image):
@@ -34,9 +35,22 @@ def classify():
     fh.write((input_string[0]).decode('base64'))
     fh.close()
 
-    image_arry = cv2.imread("image.jpg")
+    #Format image rgb
+    image_rgb = cv2.imread("image.jpg")
+    image_rgb = np.array(image_rgb).flatten()
+    image_rgb = map(float, image_rgb)
 
-    image_array = classifier.create_img_array(image_arry, input_string[1], input_string[2], input_string[3])
+    #Format other data points
+    sex = classifier_const.K_SEX_DICT[input_string[1]]
+    age = float(input_string[2])//5*5
+    location = classifier_const.K_LOC_DICT[input_string[3]]
+
+    print "Sex:",sex
+    print "Age:",age
+    print "Location:",location
+    #print "Image rgb:",image_rgb
+
+    image_array = classifier.create_img_array(image_rgb, sex, age, location)
 
     result=classifier.classify_image(current_model, image_array)
 
