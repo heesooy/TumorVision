@@ -9,10 +9,10 @@ from flask import Flask, jsonify
 from flask import make_response
 app = Flask(__name__)
 
-current_model = load_model("model_100")
-def load_testing_image(image):
-	loaded_image = Image.open(image)
-	return loaded_image
+current_model = classifier.load_model("model_final")
+#def load_testing_image(image):
+#	loaded_image = Image.open(image)
+#	return loaded_image
 
 @app.route("/api/classify", methods = ['GET'])
 def classify_default():
@@ -28,7 +28,7 @@ def classify(str):
 
 	image_arry = cv2.imread("image.jpg")
 
-	result=classify_image(current_model, image_file)
+	result=classifier.classify_image(current_model, image_file)
 	#x = classify_image_serverside()
 
    	return x
@@ -46,7 +46,7 @@ def classify_image_complete(encoded_img, age, sex, region):
 
 	image_array = create_img_array(image_arry, classifier_const.K_SEX_DICT[sex], age_fix, classifier_const.K_LOC_DICT[region])
 
-	result=classify_image(current_model, image_file)
+	result=classifier.classify_image(current_model, image_file)
 	#x = classify_image_serverside()
 
    	return result
