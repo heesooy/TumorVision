@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Picker } from 'react-native';
 import { Card, CardSection, Button } from './components/common';
 
 class Fill extends React.Component {
@@ -7,20 +7,43 @@ class Fill extends React.Component {
     title: 'Fill',
   };
 
+  state = {
+    age: null,
+    sex: 'male'
+  };
+
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View>
         <Card>
           <CardSection>
-            <Text>Put some information, like Logo or something here</Text>
+            <Text>Please fill out your age and sex.</Text>
           </CardSection>
+
+          <CardSection>
+            <Card>
+              <Picker
+                style={{ width: 300 }}
+                selectedValue={this.state.sex}
+                onValueChange={(value) => this.setState({ sex: value })}
+              >
+                <Picker.Item label='Male' value='male' />
+                <Picker.Item label='Female' value='female' />
+              </Picker>
+            </Card>
+          </CardSection>
+
           <CardSection>
             <Button
               onPress={() =>
-              navigate('Capture', { name: 'Jane' })
+                this.props.navigation.navigate('Capture', {
+                  age: this.state.age,
+                  sex: this.state.sex
+                })
               }
-            >Next</Button>
+            >
+              Next
+            </Button>
           </CardSection>
         </Card>
       </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Card, CardSection, Button } from './components/common';
 
 class Result extends React.Component {
@@ -8,19 +8,50 @@ class Result extends React.Component {
   };
 
   render() {
-    const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
+    const age = params ? params.age : null;
+    const sex = params ? params.sex : null;
+    const image = params ? params.image : null;
+    const region = params ? params.region : null;
+
+    console.log(image);
+
     return (
       <View>
         <Card>
           <CardSection>
-            <Text>Put some information, like Logo or something here</Text>
+            <Card>
+              <Text>{age}</Text>
+            </Card>
+
+            <Card>
+              <Text>{sex}</Text>
+            </Card>
+
+            <Card>
+              <Text>{region}</Text>
+            </Card>
           </CardSection>
+
+          <CardSection>
+            <Card>
+              <Image
+                style={{
+                  height: 300,
+                  flex: 1,
+                  width: null
+                }}
+                source={{ uri: image.uri }}
+              />
+            </Card>
+          </CardSection>
+
           <CardSection>
             <Button
-              onPress={() =>
-              navigate('Start', { name: 'Jane' })
-              }
-            >Return to start</Button>
+              onPress={() => this.props.navigation.navigate('Start', { })}
+            >
+              Return to start
+            </Button>
           </CardSection>
         </Card>
       </View>

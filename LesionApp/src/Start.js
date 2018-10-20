@@ -8,19 +8,17 @@ class Start extends React.Component {
   };
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View>
         <Card>
           <CardSection>
             <Text>Put some information, like Logo or something here</Text>
           </CardSection>
+
           <CardSection>
-            <Button
-              onPress={() =>
-              navigate('Fill', { name: 'Jane' })
-              }
-            >Next</Button>
+            <Button onPress={() => this.props.navigation.navigate('Fill')}>
+              Next
+            </Button>
           </CardSection>
         </Card>
       </View>

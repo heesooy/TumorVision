@@ -5,11 +5,12 @@ import { Button, CardSection, Card } from './components/common';
 
 class Capture extends React.Component {
   static navigationOptions = {
-    title: 'Capture',
+    title: 'Capture'
   };
 
   state = {
     image: null,
+    region: 'buttocks'
   };
 
   pickImage = async () => {
@@ -17,59 +18,72 @@ class Capture extends React.Component {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
     const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
+      base64: true,
+      allowsEditing: false,
+      aspect: [4, 3]
     });
 
-    console.log(result);
+    //console.log(result);
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.setState({ image: result });
     }
   }
 
-  renderContent() {
-    const { navigate } = this.props.navigation;
+  renderNextButton() {
+    const { params } = this.props.navigation.state;
+    const age = params ? params.age : null;
+    const sex = params ? params.sex : null;
 
-    if (this.state.image != null) {
-      return (
-        <Button
-          onPress={() =>
-          navigate('Result', { name: 'Jane' })
-          }
-        >Next</Button>
-      );
-    }
     return (
-      <Button onPress={this.pickImage}>Take picture</Button>
+      <Button
+      onPress={() =>
+        this.props.navigation.navigate('Result', {
+          age,
+          sex,
+          image: this.state.image,
+          region: this.state.region
+        })
+      }
+      >
+      Next
+      </Button>
     );
   }
 
   render() {
-    const { image } = this.state;
-
+    const image = this.state.image;
     const {
       headerContentStyle,
       headerTextStyle,
-      thumbnailStyle,
-      thumbnailContainerStyle,
       imageStyle
     } = styles;
+
+    if (image == null) {
+      return (<Card>
+        <CardSection>
+          <Button onPress={this.pickImage}>Take picture</Button>
+        </CardSection>
+      </Card>);
+    }
 
     return (
       <Card>
         <CardSection>
-        <View style={thumbnailContainerStyle}>
-          <Image style={thumbnailStyle} source={{ uri: image }} />
-        </View>
-        <View style={headerContentStyle}>
-          <Text style={headerTextStyle}>Your Picture</Text>
-        </View>
-      </CardSection>
-        <CardSection>
-          <Image style={imageStyle} source={{ uri: image }} />
+          <View style={headerContentStyle}>
+            <Text style={headerTextStyle}>Your Picture</Text>
+          </View>
         </CardSection>
+
         <CardSection>
-          {this.renderContent()}
+          <Image style={imageStyle} source={{ uri: image.uri }} />
+        </CardSection>
+
+        <CardSection>
+          <Text>Region</Text>
+        </CardSection>
+
+        <CardSection>
+          {this.renderNextButton()}
         </CardSection>
       </Card>
     );
@@ -84,16 +98,6 @@ const styles = {
   },
   headerTextStyle: {
     fontSize: 18,
-  },
-  thumbnailStyle: {
-    height: 50,
-    width: 50
-  },
-  thumbnailContainerStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 10,
-    marginRight: 10
   },
   imageStyle: {
     height: 300,
