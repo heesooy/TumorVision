@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 #from PIL import Image
 import classifier_lib
 import classifier_util
@@ -110,7 +111,7 @@ def create_img_array(image_array, user_sex=2, user_age=0, user_location=12):
     image_arr = np.append(np.array(image_array), np.array(edges))
     image_arr = image_arr.flatten()
 
-    image_arr = np.append(image_arr, [user_sex, user_loc, user_age])
+    image_arr = np.append(image_arr, [user_sex, user_location, user_age])
 
     return image_arr
 
