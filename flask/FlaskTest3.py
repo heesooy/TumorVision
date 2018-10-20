@@ -21,17 +21,18 @@ def classify_default():
 @app.route("/api/classify/<string:str>", methods = ['GET'])
 def classify(str):
 
-	input_string = str
+	input_string = str.rsplit('/', 4)
 	fh = open("image.jpg", "wb")
-	fh.write(input_string.decode('base64'))
+	fh.write(input_string[0].decode('base64'))
 	fh.close()
 
 	image_arry = cv2.imread("image.jpg")
 
-	result=classifier.classify_image(current_model, image_file)
-	#x = classify_image_serverside()
+	image_array = classifier.create_img_array(image_arry, input_string[1], input_string[2], input_string[3])
 
-   	return x
+	result=classifier.classify_image(current_model, image_array)
+
+   	return result
 
 @app.route("/api/classify/<string:encoded_img>/<int:age>/<string:sex>/<string:region>", methods = ['GET'])
 def classify_image_complete(encoded_img, age, sex, region):
@@ -47,11 +48,8 @@ def classify_image_complete(encoded_img, age, sex, region):
 	image_array = create_img_array(image_arry, classifier_const.K_SEX_DICT[sex], age_fix, classifier_const.K_LOC_DICT[region])
 
 	result=classifier.classify_image(current_model, image_file)
-	#x = classify_image_serverside()
 
    	return result
-
-
 
 @app.route("/api/storeinfo/<string:features>", methods = ['PUT'])
 def store_info(features):
