@@ -69,7 +69,7 @@ def test_model(model, test_split, lookup_table):
 		predicted_disease = model.predict([image])
 		actual_disease = classifier_lib.lookup_image_disease(classifier_const.K_IMAGE_PATH, image_id,\
 														  lookup_table, classifier_const.K_DIS_DICT)
-		
+
 		total_evaluated[actual_disease] += 1
 
 		if(predicted_disease[0] == actual_disease):
@@ -106,7 +106,7 @@ def load_model(model_name):
 def create_img_array(image_array, user_sex=2, user_age=0, user_location=12):
 
     edges = cv2.Canny(image_array, 100, 200)
-    
+
     image_arr = np.append(np.array(image_array), np.array(edges))
     image_arr = image_arr.flatten()
 
@@ -131,5 +131,3 @@ def main():
 	print "Classification of ",image,": \n\t",classify_image(classifier, image)
 
 	#test_model(classifier, 0.2, metadata)
-
-main()
