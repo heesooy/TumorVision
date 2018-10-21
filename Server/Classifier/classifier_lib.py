@@ -1,5 +1,4 @@
 import numpy as np
-from PIL import Image
 import cv2
 
 #Returns a dictionary map of image to classification info

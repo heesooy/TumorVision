@@ -1,26 +1,21 @@
 import numpy as np
 import cv2
-#from PIL import Image
 import classifier_lib
-import classifier_util
 import classifier_const
 from sklearn.linear_model import SGDClassifier
-from sklearn.neural_network import MLPClassifier
 from sklearn.externals import joblib
 
+#Train a model off the first train_split fraction of the data, stores it in classifier_name
 def train_model(train_split, classifier_name, lookup_table):
 
+	#Use Stochastic Gradient Descent
 	classifier = SGDClassifier(loss='log', max_iter=10**9)
-
-	#classifier.partial_fit([np.array([0])], np.array())
-	#classifier.partial_fit([classifier_lib.load_image_jpg(classifier_const.K_IMAGE_PATH, classifier_const.K_IMAGE_ORDER[0],\
-	#	lookup_table, classifier_const.K_SEX_DICT, classifier_const.K_LOC_DICT)], [range(len(classifier_const.K_DIS_DICT))],
-	#	classes = np.unique(range(len(classifier_const.K_DIS_DICT))))
 
 	data_size = classifier_const.K_IMAGE_ID_UPPER-classifier_const.K_IMAGE_ID_LOWER
 
 	batches = (int)(data_size*train_split)//classifier_const.K_BATCH_SIZE
 
+	#Our unit of training size is batch
 	for batch in range(batches):
 
 		print "Training Batch:",batch+1,"of",batches
@@ -47,8 +42,10 @@ def train_model(train_split, classifier_name, lookup_table):
 
 		classifier.partial_fit(image_data_set, disease_set, classes=np.unique(range(len(classifier_const.K_DIS_DICT))))
 
+	#Store the trained model
 	joblib.dump(classifier, classifier_const.K_MODEL_PATH+classifier_name+".joblib")
 
+#Test the accuracy of a given model using the last test_split fraction of the data, and prints out the results
 def test_model(model, test_split, lookup_table):
 
 	correct_evaluated = []
@@ -96,14 +93,18 @@ def test_model(model, test_split, lookup_table):
 
 	print "----------- End Test Results ------------"
 
-
-
+#Load a model file and return an instantiated classifier
 def load_model(model_name):
+	
 	print "Loading model "+model_name
+	
 	classifier = joblib.load(classifier_const.K_MODEL_PATH+model_name+'.joblib')
+	
 	print "Successfully loaded model "+model_name
+	
 	return classifier
 
+#Identify features of a cv2 image, and append those with the user sex, age, and location
 def create_img_array(image_array, user_sex=2, user_age=0, user_location=12):
 
     edges = cv2.Canny(image_array, 100, 200)
@@ -115,20 +116,7 @@ def create_img_array(image_array, user_sex=2, user_age=0, user_location=12):
 
     return image_arr
 
+#Use given model to predict the class type of image
 def classify_image(model, image):
+
 	return model.predict([image])[0]
-
-def main():
-
-	metadata = classifier_lib.load_metadata(classifier_const.K_DATA_PATH)
-
-	#train_model(1.0, 'cv_model_10', metadata)
-
-	classifier = load_model('model_final')
-
-	image = classifier_lib.load_image_jpg(classifier_const.K_IMAGE_PATH, classifier_const.K_IMAGE_ORDER[0],\
-		metadata, classifier_const.K_SEX_DICT, classifier_const.K_LOC_DICT)
-
-	print "Classification of ",image,": \n\t",classify_image(classifier, image)
-
-	#test_model(classifier, 0.2, metadata)
