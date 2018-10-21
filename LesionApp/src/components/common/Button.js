@@ -18,11 +18,13 @@ const styles = {
     flex: 1,
     alignSelf: 'stretch',
     backgroundColor: '#fff',
-    borderRadius: 5,
+    borderRadius: 30,
     borderWidth: 1,
     borderColor: '#007aff',
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
+    marginTop: 5,
+    marginBottom: 5
   },
   textStyle: {
     alignSelf: 'center',
