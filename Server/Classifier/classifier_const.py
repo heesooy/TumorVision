@@ -1,8 +1,8 @@
 import classifier_util
 from random import shuffle
 
-K_MODEL_PATH = "../classifier/models/"
-K_DATA_PATH = "../../../LesionTrainingData/"
+K_MODEL_PATH = "Classifier/models/"
+K_DATA_PATH = "../../../../LesionTrainingData/"
 
 K_IMAGE_PATH = K_DATA_PATH+"Images/"
 #Set 1 ranges from 0024306 to 0029999

@@ -3,7 +3,7 @@ import sys
 import os
 import cv2
 path = os.getcwd()
-sys.path.insert(0, path + '/../classifier')
+sys.path.insert(0, path + '/Classifier')
 import classifier
 import classifier_const
 from flask import Flask, jsonify
