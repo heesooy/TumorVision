@@ -13,42 +13,27 @@ import unicodedata
 import numpy as np
 
 current_model = classifier.load_model("model_final")
-#def load_testing_image(image):
-#	loaded_image = Image.open(image)
-#	return loaded_image
-
-#@app.route("/api/classify", methods = ['GET'])
-#def classify_default():
-#    print "Hello default"    
-#    return "classification: mel"
 
 @app.route("/api/classify/", methods = ['GET'])
 def classify():
 
-    #app.logger.disabled = True
-    #log = cf.logging.getLogger('werkzeug')
-    #log.disabled = True
-
-    print "Hello 1"
     image_raw = request.args.get('raw')
     input_string = image_raw.rsplit('/', 3)
     input_string[0] = input_string[0].replace(' ', '+')
     for i in range(len(input_string)):
         input_string[i] = unicodedata.normalize('NFKD', input_string[i]).encode('ASCII', 'ignore')
-    print input_string
-    fh = open("image.jpg", "wb")
-    fh.write((input_string[0]).decode('base64'))
-    fh.close()
+
+    image_raw = input_string[0].decode('base64')
 
     #Format image rgb
-    image_rgb = cv2.imread("image.jpg")
-    #image_rgb = np.array(image_rgb).flatten()
-    #image_rgb = map(float, image_rgb)
+    #image_rgb = np.asarray(bytearray(image_raw), dtype=np.uint8)#cv2.imread("image.jpg")
+    image_raw_array = np.fromstring(image_raw, dtype='uint8')
+    image_rgb = cv2.imdecode(image_raw_array, cv2.IMREAD_UNCHANGED)
 
     #Format other data points
-    sex = classifier_const.K_SEX_DICT[input_string[1]]#unicodedata.normalize('NFKD', input_string[1]).encode('ASCII', 'ignore')]
+    sex = classifier_const.K_SEX_DICT[input_string[1]]
     age = float(input_string[2])//5*5
-    location = classifier_const.K_LOC_DICT[input_string[3]]#unicodedata.normalize('NFKD', input_string[3]).encode('ASCII', 'ignore')]
+    location = classifier_const.K_LOC_DICT[input_string[3]]
 
     print "Sex:",sex
     print "Age:",age
@@ -59,29 +44,7 @@ def classify():
 
     result=classifier.classify_image(current_model, image_array)
 
-    return classifier_const.K_DIS_LOOKUP[result]
-
-#@app.route("/api/classify/<string:encoded_img>/<int:age>/<string:sex>/<string:region>", methods = ['GET'])
-#def classify_image_complete(encoded_img, age, sex, region):
-#
-#	age_fix = (age//5) * 5
-#
-#	fh = open("image.jpg", "wb")
-#	fh.write(encoded_img.decode('base64'))
-#	fh.close()
-#
-#	image_arry = cv2.imread("image.jpg")
-#
-#	image_array = create_img_array(image_arry, classifier_const.K_SEX_DICT[sex], age_fix, classifier_const.K_LOC_DICT[region])
-
-#	result=classifier.classify_image(current_model, image_file)
-
- #  	return result
-
-@app.route("/api/storeinfo/<string:features>", methods = ['PUT'])
-def store_info(features):
-
-    return "Features placed into function"
+    return classifier_const.K_DIS_LOOKUP[result] 
 
 if __name__ == '__main__':
     app.run(debug = True)
