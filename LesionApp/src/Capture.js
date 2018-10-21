@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, View, Text } from 'react-native';
-import { ImagePicker, Permissions } from 'expo';
+import { Image, View, Text, Picker } from 'react-native';
+import { ImagePicker, ImageManipulator, Permissions } from 'expo';
 import { Button, CardSection, Card } from './components/common';
 
 class Capture extends React.Component {
@@ -10,7 +10,8 @@ class Capture extends React.Component {
 
   state = {
     image: null,
-    region: 'buttocks'
+    resized: null,
+    region: 'back'
   };
 
   pickImage = async () => {
@@ -18,14 +19,21 @@ class Capture extends React.Component {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
     const result = await ImagePicker.launchCameraAsync({
-      base64: true,
-      allowsEditing: false,
+      allowsEditing: true,
       aspect: [4, 3]
+    });
+    //base64: true,
+
+    const uri = result.uri;
+    const actions = [];
+    actions.push({ resize: { width: 600, height: 450 } });
+    const resized = await ImageManipulator.manipulate(uri, actions, {
+       base64: true
     });
 
     //console.log(result);
     if (!result.cancelled) {
-      this.setState({ image: result });
+      this.setState({ image: result, resized });
     }
   }
 
@@ -36,16 +44,16 @@ class Capture extends React.Component {
 
     return (
       <Button
-      onPress={() =>
-        this.props.navigation.navigate('Result', {
-          age,
-          sex,
-          image: this.state.image,
-          region: this.state.region
-        })
-      }
+        onPress={() =>
+          this.props.navigation.navigate('Result', {
+            age,
+            sex,
+            image: this.state.resized,
+            region: this.state.region
+          })
+        }
       >
-      Next
+        Next
       </Button>
     );
   }
@@ -59,11 +67,12 @@ class Capture extends React.Component {
     } = styles;
 
     if (image == null) {
-      return (<Card>
-        <CardSection>
-          <Button onPress={this.pickImage}>Take picture</Button>
-        </CardSection>
-      </Card>);
+      return (
+        <Card>
+          <CardSection>
+            <Button onPress={this.pickImage}>Take picture</Button>
+          </CardSection>
+        </Card>);
     }
 
     return (
@@ -79,7 +88,29 @@ class Capture extends React.Component {
         </CardSection>
 
         <CardSection>
-          <Text>Region</Text>
+          <Card>
+            <Picker
+              style={{ width: 300 }}
+              selectedValue={this.state.region}
+              onValueChange={(value) => this.setState({ region: value })}
+            >
+              <Picker.Item label='Back' value='back' />
+              <Picker.Item label='Lower Extremity' value='lower extremity' />
+              <Picker.Item label='Scalp' value='scalp' />
+              <Picker.Item label='Ear' value='ear' />
+              <Picker.Item label='Face' value='face' />
+              <Picker.Item label='Trunk' value='trunk' />
+              <Picker.Item label='Chest' value='chest' />
+              <Picker.Item label='Upper Extremity' value='upper extremity' />
+              <Picker.Item label='Abdomen' value='abdomen' />
+              <Picker.Item label='Hand' value='hand' />
+              <Picker.Item label='Genital' value='genital' />
+              <Picker.Item label='Neck' value='neck' />
+              <Picker.Item label='Foot' value='foot' />
+              <Picker.Item label='Acral' value='acral' />
+              <Picker.Item label='Unknown' value='unknown' />
+            </Picker>
+          </Card>
         </CardSection>
 
         <CardSection>

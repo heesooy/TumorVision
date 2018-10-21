@@ -8,9 +8,21 @@ class Fill extends React.Component {
   };
 
   state = {
-    age: null,
+    age: 1,
     sex: 'male'
   };
+
+  listAge = (max) => {
+    let list = [];
+    for (let i = 1; i <= max; i++) {
+      list.push(i);
+    }
+    return (
+      list.map((x, i) => {
+          return (<Picker.Item label={x.toString()} key={i} value={i + 1} />);
+        })
+      );
+  }
 
   render() {
     return (
@@ -18,6 +30,18 @@ class Fill extends React.Component {
         <Card>
           <CardSection>
             <Text>Please fill out your age and sex.</Text>
+          </CardSection>
+
+          <CardSection>
+            <Card>
+              <Picker
+                style={{ width: 300 }}
+                selectedValue={this.state.age}
+                onValueChange={(value) => this.setState({ age: value })}
+              >
+                {this.listAge(100)}
+              </Picker>
+            </Card>
           </CardSection>
 
           <CardSection>
