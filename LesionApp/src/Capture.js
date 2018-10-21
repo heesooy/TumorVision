@@ -5,7 +5,8 @@ import { Button, CardSection, Card } from './components/common';
 
 class Capture extends React.Component {
   static navigationOptions = {
-    title: 'Capture'
+    title: 'Capture Picture',
+    headerRight: (<View />)
   };
 
   state = {
@@ -61,35 +62,45 @@ class Capture extends React.Component {
   render() {
     const image = this.state.image;
     const {
+      imageStyle,
       headerContentStyle,
       headerTextStyle,
-      imageStyle
+      mainWrapperStyle,
+      mainContentStyle,
+      footerStyle
     } = styles;
 
     if (image == null) {
       return (
-        <Card>
-          <CardSection>
+        <View style={mainWrapperStyle}>
+          <View style={mainContentStyle}>
+            <CardSection>
+              <Text>Please take a photo of the lesion you would like to classify. Then, choose the closest body part to the lesion from the dropdown menu. Lighting conditions and image quality may affect the accuracy of results.</Text>
+            </CardSection>
+          </View>
+          <View style={footerStyle}>
             <Button onPress={this.pickImage}>Take picture</Button>
-          </CardSection>
-        </Card>);
+          </View>
+        </View>);
     }
 
     return (
-      <Card>
-        <CardSection>
-          <View style={headerContentStyle}>
-            <Text style={headerTextStyle}>Your Picture</Text>
-          </View>
-        </CardSection>
+      <View style={mainWrapperStyle}>
+        <View style={mainContentStyle}>
 
-        <CardSection>
-          <Image style={imageStyle} source={{ uri: image.uri }} />
-        </CardSection>
+            <View style={headerContentStyle}>
+              <Text style={headerTextStyle}>Your Picture</Text>
+            </View>
 
-        <CardSection>
-          <Card>
+
+          <CardSection>
+            <Image style={imageStyle} source={{ uri: image.uri }} />
+          </CardSection>
+
+          <Text style={{ fontSize: 13, textAlign: 'center', marginTop: 10, marginBottom: 10 }}>Choose the closest location to the lesion in the photo</Text>
+          <View style={{ borderWidth: 1, borderColor: '#808080', marginTop: 5, borderRadius: 10 }}>
             <Picker
+              mode='dropdown'
               style={{ width: 300 }}
               selectedValue={this.state.region}
               onValueChange={(value) => this.setState({ region: value })}
@@ -110,30 +121,58 @@ class Capture extends React.Component {
               <Picker.Item label='Acral' value='acral' />
               <Picker.Item label='Unknown' value='unknown' />
             </Picker>
-          </Card>
-        </CardSection>
+          </View>
+        </View>
 
-        <CardSection>
+        <View style={footerStyle}>
           {this.renderNextButton()}
-        </CardSection>
-      </Card>
+        </View>
+      </View>
     );
   }
 
 }
 
 const styles = {
+  imageStyle: {
+    height: 300,
+    flex: 1,
+    width: null
+  },
   headerContentStyle: {
     flexDirection: 'column',
     justifyContent: 'space-around'
   },
   headerTextStyle: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: 'bold'
   },
-  imageStyle: {
-    height: 300,
+  mainWrapperStyle: {
     flex: 1,
-    width: null
+    justifyContent: 'space-between'
+  },
+  mainContentStyle: {
+    marginLeft: 8,
+    marginRight: 8,
+    marginTop: 10,
+    borderRadius: 10,
+    padding: 5,
+    backgroundColor: '#fff',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    alignContent: 'space-between',
+    flex: 1
+  },
+  footerStyle: {
+    marginTop: 10,
+    borderRadius: 0,
+    padding: 5,
+    backgroundColor: '#fff',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    borderColor: '#ddd',
+    position: 'relative'
   }
 };
 

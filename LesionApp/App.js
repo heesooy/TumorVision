@@ -10,6 +10,23 @@ const RootStack = createStackNavigator({
   Fill: { screen: Fill },
   Capture: { screen: Capture },
   Result: { screen: Result }
+},
+{
+  initialRouteName: 'Start',
+  /* The header config from HomeScreen is now here */
+  navigationOptions: {
+    headerStyle: {
+      backgroundColor: '#f4511e',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+      fontWeight: 'bold',
+      justifyContent: 'space-between',
+      textAlign: 'center',
+      alignSelf: 'center',
+      flex: 1
+    },
+  },
 });
 
 class App extends React.Component {
