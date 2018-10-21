@@ -1,4 +1,12 @@
-# Lesion-Learning
+Created by Joe Carolan, Dev Satpathy, Danielle Yang, and Heesoo Yang for Boilermake VI
+# TumorVision
+
+An application for Android, iOS, and web environments to diagnose a lesion on a patient's skin, built using Python, Flask, and React Native.
+
+The application visually analyzes skin lesions from pictures to determine whether the lesions correspond to any known types of cancer or other significant dermataological conditions. When the application is executed, the client takes an image of a lesion on their skin using their smartphone, providing data about their age, gender, and the region of the body where the picture is taken. This is then sent to a server where it is compared with a ML model to diagnose the type of lesion on the skin, and to determine if it is cancerous. Afterwards, the client is sent back data about the potential characteristics of their disease. The ML model is trained using a data set acquired from kaggle.com: 
+https://www.kaggle.com/kmader/skin-cancer-mnist-ham10000
+Limitations of the model include the size of the data set, probabilities computed by the ML model of the data, and only taking one image to evaluate a skin lesion.
+
 # Skin Cancer Types and Info
 
  Actinic keratoses and intraepithelial carcinoma / Bowen's disease (akiec): 
